@@ -36,7 +36,6 @@ class WellnessAutoRegressiveDataset(Dataset):
 
 class WellnessTextClassificationDataset(Dataset):
   """Wellness Text Classification Dataset"""
-
   def __init__(self,
                file_path = "../data/wellness_dialog_for_autoregressive.txt"
                ):
