@@ -1,3 +1,5 @@
+import torch
+import torch.nn as nn
 from torch.utils.data import Dataset # 데이터로더
 
 from kogpt2_transformers import get_kogpt2_tokenizer
@@ -37,13 +39,13 @@ class WellnessAutoRegressiveDataset(Dataset):
 class WellnessTextClassificationDataset(Dataset):
   """Wellness Text Classification Dataset"""
   def __init__(self,
-               file_path = "../data/wellness_dialog_for_autoregressive.txt"
+               file_path = "../data/wellness_dialog_for_text_classification.txt",
+               num_label = 360,
                ):
     self.file_path = file_path
     self.data =[]
-    self.tokenizer = get_kogpt2_tokenizer()
-    bos_token_id = [self.tokenizer.bos_token_id]
-    eos_token_id = [self.tokenizer.eos_token_id]
+    self.tokenizer = get_tokenizer()
+    self.one_hot = torch.eye(num_label)
 
     file = open(self.file_path, 'r', encoding='utf-8')
 
@@ -52,9 +54,12 @@ class WellnessTextClassificationDataset(Dataset):
       if not line:
         break
       datas = line.split("    ")
-      index_of_words = bos_token_id +self.tokenizer.encode(datas[0]) + eos_token_id + bos_token_id + self.tokenizer.encode(datas[1][:-1])+ eos_token_id
+      index_of_words = self.tokenizer.encode(datas[0])
+      label = self.one_hot[int(datas[1][:-1])]
 
-      self.data.append(index_of_words)
+      data = {'input':index_of_words, 'label': label}
+
+      self.data.append(data)
 
     file.close()
 
@@ -66,4 +71,6 @@ class WellnessTextClassificationDataset(Dataset):
 
 if __name__ == "__main__":
   dataset = WellnessAutoRegressiveDataset()
+  dataset2 = WellnessTextClassificationDataset()
   print(dataset)
+  print(dataset2)
