@@ -43,7 +43,7 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
       'model_state_dict': self.state_dict(),
       'optimizer_state_dict': optimizer_state_dict,
       'loss': loss
-    }, save_path + 'KoBERT_TextClassification_checkpoint.tar')
+    }, save_path)
 
   def forward(
           self,
