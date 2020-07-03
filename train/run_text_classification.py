@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import torch
 import torch.nn as nn
-
+from transformers import AdamW
 from torch.utils.data import dataloader
 from dataloader.wellness import WellnessTextClassificationDataset
 from model.text_classification import KoBERTforSequenceClassfication
@@ -17,51 +17,38 @@ from model.text_classification import KoBERTforSequenceClassfication
 def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_path, train_step = 0):
     losses = []
     train_start_index = train_step+1 if train_step != 0 else 0
-    total_train_step = len(train_loader) - train_start_index
+    total_train_step = len(train_loader)
     model.train()
 
     with tqdm(total= total_train_step, desc=f"Train({epoch})") as pbar:
+        pbar.update(train_step)
         for i, value in enumerate(train_loader, train_start_index):
-            if i >= total_train_step:
-                torch.save({
-                    'epoch': epoch+1,  # 현재 학습 epoch
-                    'model_state_dict': model.state_dict(),  # 모델 저장
-                    'optimizer_state_dict': optimizer.state_dict(),  # 옵티마이저 저장
-                    'loss': loss,  # Loss 저장
-                    'train_step': 0,  # 현재 진행한 학습
-                    'total_train_step': 0 # 현재 epoch에 학습 할 총 train step
-                }, save_pretrain)
-                model.save()
-                break
+
             labels_cls, labels_lm, inputs, segments = map(lambda v: v.to(device), value)
 
             optimizer.zero_grad()
-            outputs, logits_cls, logits_lm = model(inputs, segments)
+            outputs = model(inputs, segments)
 
+            loss = outputs[0]
 
-            loss_cls = criterion_cls(logits_cls, labels_cls)
-            loss_lm = criterion_lm(logits_lm.view(-1, logits_lm.size(2)), labels_lm.view(-1))
-
-            loss = loss_cls + loss_lm
-
-            loss_val = loss_lm.item()
-            losses.append(loss_val)
+            losses.append(loss)
 
             loss.backward()
             optimizer.step()
 
-            if i % save_step == 0:
-                torch.save({
-                    'epoch': epoch,                                   # 현재 학습 epoch
-                    'model_state_dict': model.state_dict(),           # 모델 저장
-                    'optimizer_state_dict': optimizer.state_dict(),   # 옵티마이저 저장
-                    'loss': loss,                                     # Loss 저장
-                    'train_step': i,                                  # 현재 진행한 학습
-                    'total_train_step': len(train_loader)             # 현재 epoch에 학습 할 총 train step
-                }, save_pretrain)
-
             pbar.update(1)
-            pbar.set_postfix_str(f"Loss: {loss_val:.3f} ({np.mean(losses):.3f})")
+            pbar.set_postfix_str(f"Loss: {loss:.3f} ({np.mean(losses):.3f})")
+
+            if i >= total_train_step or i % save_step == 0:
+                torch.save({
+                    'epoch': epoch,  # 현재 학습 epoch
+                    'model_state_dict': model.state_dict(),  # 모델 저장
+                    'optimizer_state_dict': optimizer.state_dict(),  # 옵티마이저 저장
+                    'loss': loss,  # Loss 저장
+                    'train_step': i,  # 현재 진행한 학습
+                    'total_train_step': len(train_loader)  # 현재 epoch에 학습 할 총 train step
+                }, save_ckpt_path)
+
     return np.mean(losses)
 
 
@@ -69,12 +56,12 @@ def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_pa
 if __name__ == '__main__':
     # Data 및 Vocab 경로
 
-    data_path = "../data/wellness_dialog_for_text_classification.txt"
+    data_path = "../data/wellness_dialog_for_text_classification_train.txt"
     checkpoint_path ="../checkpoint"
     save_ckpt_path = f"{checkpoint_path}/wellnesee-text-classification.pth"
 
     n_epoch = 20          # Num of Epoch
-    batch_size = 128      # 배치 사이즈
+    batch_size = 4      # 배치 사이즈
     device = "cuda" if torch.cuda.is_available() else "cpu"
     save_step = 100 # 학습 저장 주기
     learning_rate = 5e-5  # Learning Rate
@@ -83,13 +70,17 @@ if __name__ == '__main__':
     dataset = WellnessTextClassificationDataset()
     train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-    # Refomer Language Model 생성
     model = KoBERTforSequenceClassfication()
     model.to(device)
 
-    criterion_lm = torch.nn.CrossEntropyLoss(ignore_index=-1, reduction='mean')
-    criterion_cls = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    # Prepare optimizer and schedule (linear warmup and decay)
+    no_decay = ['bias', 'LayerNorm.weight']
+    optimizer_grouped_parameters = [
+        {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+         'weight_decay': 0.01},
+        {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
+    ]
+    optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
     pre_epoch, pre_loss, train_step = 0, 0, 0
     if os.path.isfile(save_ckpt_path):
@@ -109,7 +100,7 @@ if __name__ == '__main__':
     offset = pre_epoch
     for step in range(n_epoch):
         epoch = step + offset
-        loss = train(device, epoch, model, criterion_lm, criterion_cls, optimizer, train_loader, save_step, train_step)
+        loss = train(device, epoch, model, optimizer, train_loader, save_step, train_step)
         losses.append(loss)
 
     # data

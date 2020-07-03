@@ -36,14 +36,6 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
     self.classifier = nn.Linear(hidden_size, num_labels)
 
     self.init_weights()
-  def save(self, epoch, count, optimizer_state_dict, loss, save_path):
-    torch.save({
-      'epoch': epoch,
-      'train_no': count,
-      'model_state_dict': self.state_dict(),
-      'optimizer_state_dict': optimizer_state_dict,
-      'loss': loss
-    }, save_path)
 
   def forward(
           self,

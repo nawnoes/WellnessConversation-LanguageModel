@@ -1,4 +1,5 @@
 import openpyxl
+import random
 from openpyxl import Workbook, load_workbook
 
 def tweet_dialog_dataset():
@@ -108,15 +109,15 @@ def wellness_text_classification_data():
   ques_file.close()
   text_classfi_file.close()
 
-def wellness_dialog_for_autoregressive():
-  None
 
-if __name__ == "__main__":
+
+def wellness_dialog_for_autoregressive():
   root_path = "../data"
   wellness_file = root_path + "/wellness_dialog_dataset.xlsx"
-  wellness_answer_file = root_path+"/wellness_dialog_answer.txt"
-  wellness_question_file = root_path+"/wellness_dialog_question.txt"
-  wellness_autoregressive_file = root_path+"/wellness_dialog_for_autoregressive.txt"
+  wellness_answer_file = root_path + "/wellness_dialog_answer.txt"
+  wellness_question_file = root_path + "/wellness_dialog_question.txt"
+  wellness_autoregressive_file = root_path + "/wellness_dialog_for_autoregressive.txt"
+
 
   answ_file = open(wellness_answer_file, 'r')
   ques_file = open(wellness_question_file, 'r')
@@ -130,13 +131,63 @@ if __name__ == "__main__":
     for ans_line_num, ans_line_data in enumerate(answ_lines):
       ans_data = ans_line_data.split('    ')
       if ques_data[0] == ans_data[0]:
-        autoregressive_file.write(ques_data[1][:-1]+"    "+ans_data[1])
+        autoregressive_file.write(ques_data[1][:-1] + "    " + ans_data[1])
       else:
         continue
 
-
-
-
-  cate_file.close()
+  answ_file.close()
   ques_file.close()
-  text_classfi_file.close()
+  autoregressive_file.close()
+
+def seperate_train_data():
+  root_path = "../data"
+
+  # wellness_autoregressive_file = root_path+"/wellness_dialog_for_autoregressive.txt"
+  # wellness_text_classification_file = root_path + "/wellness_dialog_for_text_classification.txt"
+  file_path = root_path + "/wellness_dialog_for_autoregressive.txt"
+  train_file_path = root_path + "/wellness_dialog_for_autoregressive_train.txt"
+  test_file_path = root_path + "/wellness_dialog_for_autoregressive_test.txt"
+
+  sperated_file = open(file_path, 'r')
+  train_file = open(train_file_path, 'w')
+  test_file = open(test_file_path, 'w')
+
+  sperated_file_lines = sperated_file.readlines()
+  ques_dict = {}
+  for line_num, line_data in enumerate(sperated_file_lines):
+    rand_num = random.randint(0, 10)
+    if rand_num < 10:
+      train_file.write(line_data)
+    else:
+      test_file.write(line_data)
+
+  sperated_file.close()
+  train_file.close()
+  test_file.close()
+
+if __name__ == "__main__":
+  root_path = "../data"
+
+  # wellness_autoregressive_file = root_path+"/wellness_dialog_for_autoregressive.txt"
+  # wellness_text_classification_file = root_path + "/wellness_dialog_for_text_classification.txt"
+  file_path= root_path + "/wellness_dialog_for_autoregressive.txt"
+  train_file_path = root_path + "/wellness_dialog_for_autoregressive_train.txt"
+  test_file_path = root_path + "/wellness_dialog_for_autoregressive_test.txt"
+
+
+  sperated_file = open(file_path, 'r')
+  train_file = open(train_file_path, 'w')
+  test_file = open(test_file_path, 'w')
+
+  sperated_file_lines = sperated_file.readlines()
+  ques_dict = {}
+  for line_num, line_data in enumerate(sperated_file_lines):
+    rand_num = random.randint(0,10)
+    if rand_num < 10:
+      train_file.write(line_data)
+    else :
+      test_file.write(line_data)
+
+  sperated_file.close()
+  train_file.close()
+  test_file.close()

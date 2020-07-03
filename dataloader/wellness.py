@@ -41,11 +41,13 @@ class WellnessTextClassificationDataset(Dataset):
   def __init__(self,
                file_path = "../data/wellness_dialog_for_text_classification.txt",
                num_label = 360,
+               max_seq_len = 512, # KoBERT max_length
                ):
     self.file_path = file_path
     self.data =[]
-    self.tokenizer = get_tokenizer()
-    self.one_hot = torch.eye(num_label)
+    tokenizer = get_tokenizer()
+    one_hot = torch.eye(num_label)
+
 
     file = open(self.file_path, 'r', encoding='utf-8')
 
@@ -54,8 +56,18 @@ class WellnessTextClassificationDataset(Dataset):
       if not line:
         break
       datas = line.split("    ")
-      index_of_words = self.tokenizer.encode(datas[0])
-      label = self.one_hot[int(datas[1][:-1])]
+      index_of_words = tokenizer.encode(datas[0])
+      token_type_ids = [0] * len(index_of_words)
+      attention_mask = [1] * len(index_of_words)
+
+      # Padding Length
+      padding_length = max_seq_len - len(index_of_words)
+
+      # Zero Padding
+      index_of_words += [0] * padding_length
+      token_type_ids += [0] * padding_length
+      attention_mask += [0]
+      label = one_hot[int(datas[1][:-1])]
 
       data = {'input':index_of_words, 'label': label}
 
