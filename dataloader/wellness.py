@@ -66,10 +66,17 @@ class WellnessTextClassificationDataset(Dataset):
       # Zero Padding
       index_of_words += [0] * padding_length
       token_type_ids += [0] * padding_length
-      attention_mask += [0]
-      label = one_hot[int(datas[1][:-1])]
+      attention_mask += [0] * padding_length
 
-      data = {'input':index_of_words, 'label': label}
+      # Label
+      label = int(datas[1][:-1])
+
+      data = {
+              'input_ids': torch.tensor(index_of_words),
+              'token_type_ids': torch.tensor(token_type_ids),
+              'attention_mask': torch.tensor(attention_mask),
+              'labels': torch.tensor(label)
+             }
 
       self.data.append(data)
 

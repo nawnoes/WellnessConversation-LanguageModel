@@ -15,13 +15,10 @@ class DialogKoGPT2(nn.Module):
       'model_state_dict': self.kogpt2.state_dict(),
       'optimizer_state_dict': optimizer_state_dict,
       'loss': loss
-    }, save_path + 'DialogKoGPT2_checkpoint.tar')
-
-  def load_state_dict(self, model_state_dict):
-    self.kogpt2.load_state_dict(model_state_dict)
+    }, save_path + 'wellness-dialogkogpt2-checkpoint.tar')
 
   def forward(self, input, labels = None):
-    if labels != None:
+    if labels is not None:
       outputs = self.kogpt2(input, labels=labels)
     else:
       outputs = self.kogpt2(input)

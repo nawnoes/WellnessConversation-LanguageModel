@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss
 from transformers import BertPreTrainedModel
 from kobert_transformers import get_kobert_model, get_distilkobert_model
+from model.configuration import get_kobert_config
 
 """
 predefined_args = {
@@ -24,10 +25,12 @@ predefined_args = {
 
 class KoBERTforSequenceClassfication(BertPreTrainedModel):
   def __init__(self,
-                num_labels = 360,
-                hidden_size = 3072,
+                num_labels = 359,
+                hidden_size = 768,
                 hidden_dropout_prob = 0.1,
                ):
+    super().__init__(get_kobert_config())
+
     self.num_labels = num_labels
 
     self.kobert = get_kobert_model()
@@ -47,7 +50,7 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
           inputs_embeds=None,
           labels=None,
   ):
-    outputs = self.bert(
+    outputs = self.kobert(
       input_ids,
       attention_mask=attention_mask,
       token_type_ids=token_type_ids,

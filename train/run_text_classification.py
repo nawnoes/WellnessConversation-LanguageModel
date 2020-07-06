@@ -1,6 +1,4 @@
 import os
-import json
-import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -8,11 +6,10 @@ from IPython.display import display
 from tqdm import tqdm
 
 import torch
-import torch.nn as nn
 from transformers import AdamW
 from torch.utils.data import dataloader
 from dataloader.wellness import WellnessTextClassificationDataset
-from model.text_classification import KoBERTforSequenceClassfication
+from model.kobert import KoBERTforSequenceClassfication
 
 def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_path, train_step = 0):
     losses = []
@@ -22,29 +19,27 @@ def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_pa
 
     with tqdm(total= total_train_step, desc=f"Train({epoch})") as pbar:
         pbar.update(train_step)
-        for i, value in enumerate(train_loader, train_start_index):
-
-            labels_cls, labels_lm, inputs, segments = map(lambda v: v.to(device), value)
+        for i, data in enumerate(train_loader, train_start_index):
 
             optimizer.zero_grad()
-            outputs = model(inputs, segments)
+            outputs = model(**data)
 
             loss = outputs[0]
 
-            losses.append(loss)
+            losses.append(loss.item())
 
             loss.backward()
             optimizer.step()
 
             pbar.update(1)
-            pbar.set_postfix_str(f"Loss: {loss:.3f} ({np.mean(losses):.3f})")
+            pbar.set_postfix_str(f"Loss: {loss.item():.3f} ({np.mean(losses):.3f})")
 
             if i >= total_train_step or i % save_step == 0:
                 torch.save({
                     'epoch': epoch,  # 현재 학습 epoch
                     'model_state_dict': model.state_dict(),  # 모델 저장
                     'optimizer_state_dict': optimizer.state_dict(),  # 옵티마이저 저장
-                    'loss': loss,  # Loss 저장
+                    'loss': loss.item(),  # Loss 저장
                     'train_step': i,  # 현재 진행한 학습
                     'total_train_step': len(train_loader)  # 현재 epoch에 학습 할 총 train step
                 }, save_ckpt_path)
@@ -54,8 +49,6 @@ def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_pa
 
 
 if __name__ == '__main__':
-    # Data 및 Vocab 경로
-
     data_path = "../data/wellness_dialog_for_text_classification_train.txt"
     checkpoint_path ="../checkpoint"
     save_ckpt_path = f"{checkpoint_path}/wellnesee-text-classification.pth"
@@ -100,7 +93,7 @@ if __name__ == '__main__':
     offset = pre_epoch
     for step in range(n_epoch):
         epoch = step + offset
-        loss = train(device, epoch, model, optimizer, train_loader, save_step, train_step)
+        loss = train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_path, train_step)
         losses.append(loss)
 
     # data
