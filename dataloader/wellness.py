@@ -9,13 +9,17 @@ class WellnessAutoRegressiveDataset(Dataset):
   """Wellness Auto Regressive Dataset"""
 
   def __init__(self,
-               file_path = "../data/wellness_dialog_for_autoregressive.txt"
+               file_path = "../data/wellness_dialog_for_autoregressive.txt",
+               n_ctx = 1024
                ):
     self.file_path = file_path
     self.data =[]
     self.tokenizer = get_kogpt2_tokenizer()
+
+
     bos_token_id = [self.tokenizer.bos_token_id]
     eos_token_id = [self.tokenizer.eos_token_id]
+    pad_token_id = [self.tokenizer.pad_token_id]
 
     file = open(self.file_path, 'r', encoding='utf-8')
 
@@ -25,6 +29,9 @@ class WellnessAutoRegressiveDataset(Dataset):
         break
       datas = line.split("    ")
       index_of_words = bos_token_id +self.tokenizer.encode(datas[0]) + eos_token_id + bos_token_id + self.tokenizer.encode(datas[1][:-1])+ eos_token_id
+      pad_token_len = n_ctx - len(index_of_words)
+
+      index_of_words += pad_token_id * pad_token_len
 
       self.data.append(index_of_words)
 
@@ -32,6 +39,7 @@ class WellnessAutoRegressiveDataset(Dataset):
 
   def __len__(self):
     return len(self.data)
+
   def __getitem__(self,index):
     item = self.data[index]
     return item

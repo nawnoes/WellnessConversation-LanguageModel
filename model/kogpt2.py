@@ -6,6 +6,7 @@ from kogpt2_transformers import get_kogpt2_model, get_kogpt2_tokenizer
 
 class DialogKoGPT2(nn.Module):
   def __init__(self):
+    super(DialogKoGPT2, self).__init__()
     self.kogpt2 = get_kogpt2_model()
 
   def save(self, epoch, count, optimizer_state_dict, loss, save_path):

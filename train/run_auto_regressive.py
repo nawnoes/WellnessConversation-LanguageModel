@@ -30,9 +30,10 @@ if __name__ == '__main__':
 
     model = DialogKoGPT2()
 
-    criterion = torch.nn.CrossEntropyLoss()
+    loss_fct = torch.nn.CrossEntropyLoss(ignore_index=3)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
+    losses =[]
     for epoch in range(n_epoch):
         count = 0
         with tqdm(total=len(train_loader), desc=f"Train({epoch})") as pbar:
@@ -42,13 +43,21 @@ if __name__ == '__main__':
                 data = data.transpose(1, 0)
 
                 outputs = model(data, labels=data)
-                loss, logits = outputs[:2]
+                _, logits = outputs[:2]
+
+                # Shift so that tokens < n predict n
+                shift_logits = logits[..., :-1, :].contiguous()
+                shift_labels = data[..., 1:].contiguous()
+
+                loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
                 loss.backward()
                 optimizer.step()
 
+                losses.append(loss.item())
+
                 if count % 10 == 0:
                     print('epoch no.{} train no.{}  loss = {}'.format(epoch, count + 1, loss))
-                if (count > 0 and count % 100 == 0) or (len(data) < batch_size):
+                if (count > 0 and count % save_step == 0) or (len(data) < batch_size):
                     torch.save({
                         'epoch': epoch,
                         'train_no': count,
@@ -57,3 +66,5 @@ if __name__ == '__main__':
                         'loss': loss
                     }, save_ckpt_path)
                 count += 1
+                pbar.update(1)
+                pbar.set_postfix_str(f"Loss: {loss.item():.3f} ({np.mean(losses):.3f})")
