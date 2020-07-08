@@ -1,15 +1,8 @@
 import os
-import json
-import logging
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-from IPython.display import display
 from tqdm import tqdm
 
 import torch
-import torch.nn as nn
-from transformers import AdamW
 from torch.utils.data import dataloader
 from dataloader.wellness import WellnessAutoRegressiveDataset
 from model.kogpt2 import DialogKoGPT2
@@ -17,7 +10,7 @@ from model.kogpt2 import DialogKoGPT2
 if __name__ == '__main__':
     data_path = "../data/wellness_dialog_for_autoregressive_train.txt"
     checkpoint_path ="../checkpoint"
-    save_ckpt_path = f"{checkpoint_path}/wellnesee-auto-regressive.pth"
+    save_ckpt_path = f"{checkpoint_path}/kogpt2-wellnesee-auto-regressive.pth"
 
     n_epoch = 5         # Num of Epoch
     batch_size = 4      # 배치 사이즈

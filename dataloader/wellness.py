@@ -48,13 +48,12 @@ class WellnessTextClassificationDataset(Dataset):
   """Wellness Text Classification Dataset"""
   def __init__(self,
                file_path = "../data/wellness_dialog_for_text_classification.txt",
-               num_label = 360,
+               num_label = 359,
                max_seq_len = 512, # KoBERT max_length
                ):
     self.file_path = file_path
     self.data =[]
     tokenizer = get_tokenizer()
-    one_hot = torch.eye(num_label)
 
 
     file = open(self.file_path, 'r', encoding='utf-8')

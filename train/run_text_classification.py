@@ -51,7 +51,7 @@ def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_pa
 if __name__ == '__main__':
     data_path = "../data/wellness_dialog_for_text_classification_train.txt"
     checkpoint_path ="../checkpoint"
-    save_ckpt_path = f"{checkpoint_path}/wellnesee-text-classification.pth"
+    save_ckpt_path = f"{checkpoint_path}/kobert-wellnesee-text-classification.pth"
 
     n_epoch = 20          # Num of Epoch
     batch_size = 4      # 배치 사이즈

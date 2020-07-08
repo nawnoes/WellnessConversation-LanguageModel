@@ -190,21 +190,31 @@ def seperate_wellness_data():
 
 if __name__ == "__main__":
   root_path = "../data"
-  kogpt2_tokenizer =get_kogpt2_tokenizer()
+  tokenizer =get_kogpt2_tokenizer()
   # wellness_autoregressive_file = root_path+"/wellness_dialog_for_autoregressive.txt"
   # wellness_text_classification_file = root_path + "/wellness_dialog_for_text_classification.txt"
   file_path = root_path + "/tweeter_dialog_data.txt"
   tweeter_autoregressive_file = root_path + "/tweeter_dialog_for_autoregressive.txt"
 
-  tweet_file = open(tweeter_autoregressive_file, 'r')
+  data_file = open(file_path, 'r')
+  tweet_file = open(tweeter_autoregressive_file, 'w')
 
-  data_file_lines = tweet_file.readlines()
-
+  data_file_lines = data_file.readlines()
+  dialog = ''
   max_len=0
   for line_num, line_data in enumerate(data_file_lines):
-    tmp_str = kogpt2_tokenizer.encode(line_data)
-    print('encode'+tmp_str.__str__())
-    print('decode'+kogpt2_tokenizer.decode(tmp_str))
-    max_len = max(max_len,len(tmp_str))
-  print(max_len)
+    if line_data == "\n" and dialog != '':
+      dialog += "\n"
+      tweet_file.write(dialog)
+      print(dialog)
+      dialog = ''
+    elif line_data != "\n":
+      tmp_data = dialog + "<s>" + line_data[:-1] + "</s>"
+      if len(tokenizer.encode(tmp_data))>= 1024:
+        continue
+      else:
+        max_len= max(len(tokenizer.encode(tmp_data)),max_len)
+        dialog = tmp_data
+  print('max_token_length: ', max_len)
+  data_file.close()
   tweet_file.close()
