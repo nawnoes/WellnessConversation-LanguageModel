@@ -17,6 +17,8 @@ class DialogKoGPT2(nn.Module):
       'optimizer_state_dict': optimizer_state_dict,
       'loss': loss
     }, save_path + 'wellness-dialogkogpt2-checkpoint.tar')
+  def generate(self,**kwargs):
+    return self.kogpt2.generate
 
   def forward(self, input, labels = None):
     if labels is not None:
@@ -25,3 +27,4 @@ class DialogKoGPT2(nn.Module):
       outputs = self.kogpt2(input)
 
     return outputs
+
