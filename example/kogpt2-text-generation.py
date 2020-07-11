@@ -28,18 +28,16 @@ tokenized_indexs = tokenizer.encode(sent)
 count = 0
 output_size = 200 # 출력하고자 하는 토큰 갯수
 
-while 1:
+# while 1:
+for i in range(5):
   input_ids = torch.tensor([tokenizer.bos_token_id,]  + tokenized_indexs).unsqueeze(0)
   # set top_k to 50
-  sample_output = model.generate(
-      input_ids,
-      do_sample=True,
-      max_length=50,
-      top_k=50
-  )
+  sample_output = model.generate(input_ids=input_ids)
 
   print("Output:\n" + 100 * '-')
-  print(tokenizer.decode(sample_output[0], skip_special_tokens=True))
+  print(sample_output[0])
 
-for s in kss.split_sentences(sent):
-    print(s)
+  print(tokenizer.decode(sample_output[0].tolist(),skip_special_tokens=True))
+
+# for s in kss.split_sentences(sent):
+#     print(s)
