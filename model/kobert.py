@@ -32,9 +32,7 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
     super().__init__(get_kobert_config())
 
     self.num_labels = num_labels
-
     self.kobert = get_kobert_model()
-
     self.dropout = nn.Dropout(hidden_dropout_prob)
     self.classifier = nn.Linear(hidden_size, num_labels)
 

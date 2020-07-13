@@ -49,9 +49,11 @@ class WellnessTextClassificationDataset(Dataset):
   def __init__(self,
                file_path = "../data/wellness_dialog_for_text_classification.txt",
                num_label = 359,
+               device = 'cpu',
                max_seq_len = 512, # KoBERT max_length
                ):
     self.file_path = file_path
+    self.device = device
     self.data =[]
     tokenizer = get_tokenizer()
 
@@ -79,10 +81,10 @@ class WellnessTextClassificationDataset(Dataset):
       label = int(datas[1][:-1])
 
       data = {
-              'input_ids': torch.tensor(index_of_words),
-              'token_type_ids': torch.tensor(token_type_ids),
-              'attention_mask': torch.tensor(attention_mask),
-              'labels': torch.tensor(label)
+              'input_ids': torch.tensor(index_of_words).to(self.device),
+              'token_type_ids': torch.tensor(token_type_ids).to(self.device),
+              'attention_mask': torch.tensor(attention_mask).to(self.device),
+              'labels': torch.tensor(label).to(self.device)
              }
 
       self.data.append(data)
