@@ -1,8 +1,6 @@
-import os
-import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import random
 
 from model.kobert import KoBERTforSequenceClassfication
 from kobert_transformers import get_tokenizer
@@ -76,24 +74,25 @@ if __name__ == "__main__":
 
   tokenizer = get_tokenizer()
 
-  sent = '요즘 기분이 우울한 느낌이에요'
-  input= kobert_input(tokenizer,sent, device,512)
-  print(input)
+  while 1:
+    sent = input('\nQuestion: ') # '요즘 기분이 우울한 느낌이에요'
+    data = kobert_input(tokenizer,sent, device,512)
+    # print(data)
 
-  output = model(**input)
-  logit = output
-  softmax_logit = nn.Softmax(logit).dim
-  # softmax_logit = F.log_softmax(torch.tensor(logit))
-  softmax_logit = softmax_logit[0].squeeze()
-  # print("logit: ",logit)
-  # print("softmax_logit: ", softmax_logit)
+    output = model(**data)
 
-  # print('argsort:',torch.argsort(softmax_logit))
-  max_index = torch.argmax(softmax_logit).item()
-  max_index_value = softmax_logit[torch.argmax(softmax_logit)].item()
+    logit = output
+    softmax_logit = nn.Softmax(logit).dim
+    softmax_logit = softmax_logit[0].squeeze()
 
-  print('argmax: ',max_index)
-  print('answer: ', answer[category[str(max_index)]])
+    max_index = torch.argmax(softmax_logit).item()
+    max_index_value = softmax_logit[torch.argmax(softmax_logit)].item()
+
+    answer_list = answer[category[str(max_index)]]
+    answer_len= len(answer_list)
+    answer_index = random.randint(0,answer_len)
+    print(f'Answer: {answer_list[answer_index]}, index: {max_index}, value: {max_index_value}')
+    print('-'*50)
   # print('argmin:',softmax_logit[torch.argmin(softmax_logit)])
 
 
