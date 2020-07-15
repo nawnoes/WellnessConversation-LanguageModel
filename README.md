@@ -1,14 +1,20 @@
 # Dialog Language Model
-한국어 Language Model을 활용한 스몰 톡 모델 파인튜닝
+한국어 Language Model을 활용한 대화 AI
 
 ## 사용 Language Model
-KoBERT, KoGPT-2, KoElectra
+KoBERT, KoGPT-2, KoElectra(예정)
+
+## 환경
+### Data
+[AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)
+### GPU
+Colab pro, P100
 
 ## Task
-### 1. Text Classifcation
+### 1. KoBERT Text Classifcation
 BERT 모델을 이용한 답변 텍스트 클래스 분류 모델.
 
-### 2. Text Generation(Auto Regressive)
+### 2. KoGPT2 Text Generation(Auto Regressive)
 GPT-2 모델을 이용한 대화 및 답변 텍스트 생성.
 
 # References
