@@ -75,4 +75,3 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
       outputs = (loss,) + outputs
 
     return outputs  # (loss), logits, (hidden_states), (attentions)
-
