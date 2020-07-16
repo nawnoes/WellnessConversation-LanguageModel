@@ -1,7 +1,5 @@
-import torch
 import torch.nn as nn
-from transformers import PreTrainedModel
-from kogpt2_transformers import get_kogpt2_model, get_kogpt2_tokenizer
+from kogpt2_transformers import get_kogpt2_model
 
 
 class DialogKoGPT2(nn.Module):
@@ -9,14 +7,6 @@ class DialogKoGPT2(nn.Module):
     super(DialogKoGPT2, self).__init__()
     self.kogpt2 = get_kogpt2_model()
 
-  def save(self, epoch, count, optimizer_state_dict, loss, save_path):
-    torch.save({
-      'epoch': epoch,
-      'train_no': count,
-      'model_state_dict': self.kogpt2.state_dict(),
-      'optimizer_state_dict': optimizer_state_dict,
-      'loss': loss
-    }, save_path + 'wellness-dialogkogpt2-checkpoint.tar')
   def generate(self,
                input_ids,
                do_sample=True,
@@ -36,5 +26,4 @@ class DialogKoGPT2(nn.Module):
       outputs = self.kogpt2(input)
 
     return outputs
-f
 

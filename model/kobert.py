@@ -6,6 +6,7 @@ from kobert_transformers import get_kobert_model, get_distilkobert_model
 from model.configuration import get_kobert_config
 
 """
+kobert config
 predefined_args = {
         'attention_cell': 'multi_head',
         'num_layers': 12,
