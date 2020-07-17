@@ -2,7 +2,7 @@
 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델을 사용하여 `auto regressive`, `text classification`을 테스트 
 
 ## 사용 Language Model
-KoBERT, KoGPT-2, KoElectra(예정)
+KoBERT, KoGPT2
 
 ## 환경
 ### Data
@@ -18,7 +18,7 @@ Colab pro, P100
 koBERT를 이용한 텍스트 분류 모델.
 #### 1.1 질의에 대한 카테고리 분류
 ##### 데이터
-wellness 심리 상담 데wellness 데이터의 경우 **카테고리/ 질문/ 답변**으로 나누어져있다. 카테고리 별로 3개 내외의 답변을 가지고 있으므로
+Wellness 심리 상담 데이터 사용. Wellness 데이터의 경우 **카테고리/ 질문/ 답변**으로 나누어져있다. 카테고리 별로 3개 내외의 답변을 가지고 있으므로
 Wellness 데이터의 경우  질문과 카테고리 클래스의 쌍으로 만들어 학습.   
   
 **카테고리 클래스** 데이터  
@@ -88,7 +88,14 @@ class DialogKoGPT2(nn.Module):
     super(DialogKoGPT2, self).__init__()
     self.kogpt2 = get_kogpt2_model()
     
-  def generate(self,
+  
+...중략...
+```
+
+##### 텍스트 생성부분
+[how-to-generate-text](https://huggingface.co/blog/how-to-generate?fbclid=IwAR2BZ4BNG0PbOvS5QaPLE0L3lx7_GOy_ePVu4X1LyTktQo-nLEPr7eht1O0) 참고 하여, Huggingface의 Generate 사용. 
+```python
+def generate(self,
                input_ids,
                do_sample=True,
                max_length=50,
@@ -99,7 +106,6 @@ class DialogKoGPT2(nn.Module):
                max_length=max_length,
                top_k=top_k,
                temperature=temperature)
-...중략...
 ```
 
 # References
@@ -108,4 +114,5 @@ class DialogKoGPT2(nn.Module):
 [KoGPT2](https://github.com/SKT-AI/KoGPT2)  
 [KoGPT2-Transformers](https://github.com/taeminlee/KoGPT2-Transformers/)  
 [KoELECTRA](https://github.com/monologg/KoELECTRA)  
-[enlipleai/kor_pretrain_LM](https://github.com/enlipleai/kor_pretrain_LM)
+[enlipleai/kor_pretrain_LM](https://github.com/enlipleai/kor_pretrain_LM)  
+[how-to-generate-text](https://huggingface.co/blog/how-to-generate?fbclid=IwAR2BZ4BNG0PbOvS5QaPLE0L3lx7_GOy_ePVu4X1LyTktQo-nLEPr7eht1O0)
