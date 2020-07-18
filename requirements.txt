@@ -1,5 +1,5 @@
 kogpt2-transformers
 kobert-transformers
-transformers==2.11.0
+transformers==3.0.0
 torch
 kss
