@@ -76,3 +76,23 @@ class KoBERTforSequenceClassfication(BertPreTrainedModel):
       outputs = (loss,) + outputs
 
     return outputs  # (loss), logits, (hidden_states), (attentions)
+
+def kobert_input(tokenizer, str, device = None, max_seq_len = 512):
+  index_of_words = tokenizer.encode(str)
+  token_type_ids = [0] * len(index_of_words)
+  attention_mask = [1] * len(index_of_words)
+
+  # Padding Length
+  padding_length = max_seq_len - len(index_of_words)
+
+  # Zero Padding
+  index_of_words += [0] * padding_length
+  token_type_ids += [0] * padding_length
+  attention_mask += [0] * padding_length
+
+  data = {
+    'input_ids': torch.tensor([index_of_words]).to(device),
+    'token_type_ids': torch.tensor([token_type_ids]).to(device),
+    'attention_mask': torch.tensor([attention_mask]).to(device),
+  }
+  return data

@@ -1,5 +1,7 @@
 # Dialog Language Model
 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델을 사용하여 `auto regressive`, `text classification`을 테스트 
+KoGPT2에 대해서는 **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델과 KoBERT에 대해서는 **질의**에 대해서 **카테고리**를 예측하는 과제 하나와
+바로 **답변**을 예측하는 `Text Classification` 과제를 테스트.
 
 ## 사용 Language Model
 KoBERT, KoGPT2
@@ -11,7 +13,6 @@ KoBERT, KoGPT2
 - [songys/Chatbot_data](https://github.com/songys/Chatbot_data)
 ### GPU
 Colab pro, P100
-### 학습시간
 
 ## Task
 ### 1. KoBERT Text Classifcation
