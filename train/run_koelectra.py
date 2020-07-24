@@ -6,7 +6,11 @@ from IPython.display import display
 from tqdm import tqdm
 
 import torch
-from transformers import AdamW
+from transformers import (
+  AdamW,
+  ElectraConfig,
+  ElectraTokenizer
+)
 from torch.utils.data import dataloader
 from dataloader.wellness import WellnessTextClassificationDataset
 from model.koelectra import koElectraForSequenceClassification
@@ -20,6 +24,8 @@ def train(epoch, model, optimizer, train_loader, save_step, save_ckpt_path, trai
     with tqdm(total= total_train_step, desc=f"Train({epoch})") as pbar:
         pbar.update(train_step)
         for i, data in enumerate(train_loader, train_start_index):
+            optimizer.zero_grad()
+
             '''
             inputs = {'input_ids': batch[0],
                       'attention_mask': batch[1],
@@ -28,9 +34,11 @@ def train(epoch, model, optimizer, train_loader, save_step, save_ckpt_path, trai
             if self.args.model_type != 'distilkobert':
               inputs['token_type_ids'] = batch[2]
             '''
-
-            optimizer.zero_grad()
-            outputs = model(**data)
+            inputs = {'input_ids': data['input_ids'],
+                      'attention_mask': data['attention_mask'],
+                      'labels': data['labels']
+                      }
+            outputs = model(**inputs)
 
             loss = outputs[0]
 
@@ -59,7 +67,8 @@ def train(epoch, model, optimizer, train_loader, save_step, save_ckpt_path, trai
 if __name__ == '__main__':
     data_path = "../data/wellness_dialog_for_text_classification_train.txt"
     checkpoint_path ="../checkpoint"
-    save_ckpt_path = f"{checkpoint_path}/kobert-wellnesee-text-classification.pth"
+    save_ckpt_path = f"{checkpoint_path}/koelectra-wellnesee-text-classification.pth"
+    model_name_or_path = "monologg/koelectra-base-discriminator"
 
     n_epoch = 20          # Num of Epoch
     batch_size = 4      # 배치 사이즈
@@ -67,11 +76,17 @@ if __name__ == '__main__':
     save_step = 100 # 학습 저장 주기
     learning_rate = 5e-5  # Learning Rate
 
+    # Electra Tokenizer
+    tokenizer = ElectraTokenizer.from_pretrained(model_name_or_path)
+
     # WellnessTextClassificationDataset 데이터 로더
-    dataset = WellnessTextClassificationDataset()
+    dataset = WellnessTextClassificationDataset(tokenizer=tokenizer)
     train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-    model = koElectraForSequenceClassification()
+    electra_config = ElectraConfig.from_pretrained(model_name_or_path)
+    model = koElectraForSequenceClassification.from_pretrained(pretrained_model_name_or_path=model_name_or_path,
+                                                               config=electra_config,
+                                                               num_labels=359)
     model.to(device)
 
     # Prepare optimizer and schedule (linear warmup and decay)

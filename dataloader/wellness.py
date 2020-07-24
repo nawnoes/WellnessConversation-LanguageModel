@@ -51,11 +51,12 @@ class WellnessTextClassificationDataset(Dataset):
                num_label = 359,
                device = 'cpu',
                max_seq_len = 512, # KoBERT max_length
+               tokenizer = None
                ):
     self.file_path = file_path
     self.device = device
     self.data =[]
-    tokenizer = get_tokenizer()
+    self.tokenizer = tokenizer if tokenizer is not None else get_tokenizer()
 
 
     file = open(self.file_path, 'r', encoding='utf-8')

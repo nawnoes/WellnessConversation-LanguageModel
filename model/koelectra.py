@@ -11,26 +11,26 @@ from transformers import (
   BertTokenizer
 )
 
-MODEL_CLASSES = {
-    "koelectra-base": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
-    "koelectra-small": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
-    "koelectra-base-v2": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
-    "koelectra-small-v2": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
-}
+# MODEL_CLASSES = {
+#     "koelectra-base": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
+#     "koelectra-small": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
+#     "koelectra-base-v2": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
+#     "koelectra-small-v2": (ElectraConfig, koElectraForSequenceClassification, ElectraTokenizer),
+# }
 
 
-def load_tokenizer(args):
-  return MODEL_CLASSES[args.model_type][2].from_pretrained(args.model_name_or_path)
+# def load_tokenizer(args):
+#   return MODEL_CLASSES[args.model_type][2].from_pretrained(args.model_name_or_path)
 
 
 class ElectraClassificationHead(nn.Module):
   """Head for sentence-level classification tasks."""
 
-  def __init__(self, config):
+  def __init__(self, config, num_labels):
     super().__init__()
     self.dense = nn.Linear(config.hidden_size, 4*config.hidden_size)
     self.dropout = nn.Dropout(config.hidden_dropout_prob)
-    self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
+    self.out_proj = nn.Linear(4*config.hidden_size,num_labels)
 
   def forward(self, features, **kwargs):
     x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
@@ -42,11 +42,13 @@ class ElectraClassificationHead(nn.Module):
     return x
 
 class koElectraForSequenceClassification(ElectraPreTrainedModel):
-  def __init__(self, config):
+  def __init__(self,
+               config,
+               num_labels):
     super().__init__(config)
-    self.num_labels = config.num_labels
+    self.num_labels = num_labels
     self.electra = ElectraModel(config)
-    self.classifier = ElectraClassificationHead(config)
+    self.classifier = ElectraClassificationHead(config, num_labels)
 
     self.init_weights()
   def forward(
