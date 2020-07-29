@@ -26,8 +26,8 @@ MODEL_CLASSES ={
   "kobert": (KoBERTforSequenceClassfication)
 }
 CHECK_POINT ={
-  "koelectra": "../koelectra-wellnesee-text-classification.pth",
-  "kobert": "../kobert-wellnese.pth"
+  "koelectra": "../checkpoint/koelectra-wellnesee-text-classification.pth",
+  "kobert": "../checkpoint/kobert-wellnese.pth"
 }
 def get_model_and_tokenizer(model_name, device):
   save_ckpt_path = CHECK_POINT[model_name]
@@ -40,7 +40,6 @@ def get_model_and_tokenizer(model_name, device):
     model = koElectraForSequenceClassification.from_pretrained(pretrained_model_name_or_path=model_name_or_path,
                                                                config=electra_config,
                                                                num_labels=359)
-
   elif model_name =='kobert':
     tokenizer = get_tokenizer()
     model = KoBERTforSequenceClassfication()
@@ -48,10 +47,10 @@ def get_model_and_tokenizer(model_name, device):
   if os.path.isfile(save_ckpt_path):
       checkpoint = torch.load(save_ckpt_path, map_location=device)
       pre_epoch = checkpoint['epoch']
-      pre_loss = checkpoint['loss']
+      # pre_loss = checkpoint['loss']
       model.load_state_dict(checkpoint['model_state_dict'])
 
-      print(f"load pretrain from: {save_ckpt_path}, epoch={pre_epoch}, loss={pre_loss}")
+      print(f"load pretrain from: {save_ckpt_path}, epoch={pre_epoch}")
 
   return model, tokenizer
 
@@ -69,7 +68,7 @@ def evaluate(model_name, device, batch_size, data_path):
   model.to(device)
 
   # WellnessTextClassificationDataset 데이터 로더
-  eval_dataset = WellnessTextClassificationDataset(file_path=data_path,device=device)
+  eval_dataset = WellnessTextClassificationDataset(file_path=data_path,device=device, tokenizer=tokenizer)
   eval_dataloader = torch.utils.data.DataLoader(eval_dataset, batch_size=batch_size, shuffle=True)
 
   logger.info("***** Running evaluation on %s dataset *****")
@@ -80,19 +79,19 @@ def evaluate(model_name, device, batch_size, data_path):
   acc = 0
 
 
-  model.eval()
+  # model.eval()
   for data in tqdm(eval_dataloader, desc="Evaluating"):
     with torch.no_grad():
       inputs = get_model_input(data)
       outputs = model(**inputs)
       loss += outputs[0]
       logit = outputs[1]
-      acc += (logit.argmax(1)==inputs['labels']).sum().item
+      acc += (logit.argmax(1)==inputs['labels']).sum().item()
 
-  return loss / len(eval_dataloader), acc / len(eval_dataloader)
+  return loss / len(eval_dataset), acc / len(eval_dataset)
 
 if __name__ == '__main__':
-  root_path = 'drive/My Drive/Colab Notebooks/dialogLM'
+  root_path = '..'
   data_path = f"{root_path}/data/wellness_dialog_for_text_classification_test.txt"
   checkpoint_path = f"{root_path}/checkpoint"
   save_ckpt_path = f"{checkpoint_path}/koelectra-wellnesee-text-classification.pth"

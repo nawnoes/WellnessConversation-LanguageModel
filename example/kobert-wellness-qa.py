@@ -35,7 +35,6 @@ def load_wellness_answer():
 
 if __name__ == "__main__":
   root_path='..'
-  data_path = f"{root_path}/data/wellness_dialog_for_autoregressive_train.txt"
   checkpoint_path =f"{root_path}/checkpoint"
   save_ckpt_path = f"{checkpoint_path}/kobert-wellnese.pth"
 

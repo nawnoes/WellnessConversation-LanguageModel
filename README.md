@@ -1,22 +1,29 @@
 # Dialog Language Model
-한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델을 사용하여 `auto regressive`, `text classification`을 테스트 
-KoGPT2에 대해서는 **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델과 KoBERT에 대해서는 **질의**에 대해서 **카테고리**를 예측하는 과제 하나와
-바로 **답변**을 예측하는 `Text Classification` 과제를 테스트.
+한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델을 사용하여 `auto regressive`, `text classification` 테스트.   
+- **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델
+- **KoELECTRA**, **KoBERT**: **질의**에 대해서 "카테고리를 예측" 하는 과제 하나와
+바로 "답변을 예측" 하는 `Text Classification` 과제를 테스트.
 
 ## 사용 Language Model
-KoBERT, KoGPT2
+KoELECTRA, KoBERT, KoGPT2
 
 ## 환경
 ### Data
-심리 상담 데이터의 경우 회원가입 후 신청하면 다운로드 가능.
-- [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)
+- [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence): 심리 상담 데이터의 경우 회원가입 후 신청하면 다운로드 가능.
 - [songys/Chatbot_data](https://github.com/songys/Chatbot_data)
 ### GPU
 Colab pro, P100
+### Package
+```
+kogpt2-transformers
+kobert-transformers
+transformers==3.0.2
+torch
+```
 
 ## Task
-### 1. KoBERT Text Classifcation
-koBERT를 이용한 텍스트 분류 모델.
+### 1. KoELECTAR & KoBERT Text Classifcation
+KoELECTAR 및 KoBERT를 이용한 텍스트 분류 모델.
 #### 1.1 질의에 대한 카테고리 분류
 ##### 데이터
 Wellness 심리 상담 데이터 사용. Wellness 데이터의 경우 **카테고리/ 질문/ 답변**으로 나누어져있다. 카테고리 별로 3개 내외의 답변을 가지고 있으므로
@@ -47,6 +54,23 @@ Wellness 데이터의 경우  질문과 카테고리 클래스의 쌍으로 만�
 수술한다는 말에 얼마나 걱정이 되던지…    2
 ```
 ##### 모델
+
+###### 1.KoELECTRA
+```python
+class koElectraForSequenceClassification(ElectraPreTrainedModel):
+  def __init__(self,
+               config,
+               num_labels):
+    super().__init__(config)
+    self.num_labels = num_labels
+    self.electra = ElectraModel(config)
+    self.classifier = ElectraClassificationHead(config, num_labels)
+
+    self.init_weights()
+...중략...
+```
+###### 2.KoBERT
+> 성능 아쉬운부분은 Dense가 없는 부분. (추후 수정)
 ```python
 class KoBERTforSequenceClassfication(BertPreTrainedModel):
   def __init__(self,
