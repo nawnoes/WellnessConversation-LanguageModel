@@ -62,13 +62,6 @@ def train(epoch, model, optimizer, train_loader, save_step, save_ckpt_path, trai
 
     return np.mean(losses)
 
-def evaluate(self, mode='test'):
-    if mode=='test':
-        data_path ="../data/wellness_dialog_for_text_classification_train.txt"
-
-
-
-
 if __name__ == '__main__':
     data_path = "../data/wellness_dialog_for_text_classification_train.txt"
     checkpoint_path ="../checkpoint"

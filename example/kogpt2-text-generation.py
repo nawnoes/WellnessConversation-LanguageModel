@@ -29,17 +29,16 @@ output_size = 200 # 출력하고자 하는 토큰 갯수
 
 while 1:
 # for i in range(5):
-  sent = input('문장 입력: ')  # '요즘 기분이 우울한 느낌이에요'
+  sent = input('Question: ')  # '요즘 기분이 우울한 느낌이에요'
   tokenized_indexs = tokenizer.encode(sent)
 
-  input_ids = torch.tensor([tokenizer.bos_token_id,]  + tokenized_indexs).unsqueeze(0)
+  input_ids = torch.tensor([tokenizer.bos_token_id,]  + tokenized_indexs +[tokenizer.eos_token_id]).unsqueeze(0)
   # set top_k to 50
   sample_output = model.generate(input_ids=input_ids)
 
-  print("Output:\n" + 100 * '-')
-  # print(sample_output[0])
 
-  print(tokenizer.decode(sample_output[0].tolist()[len(tokenized_indexs)+1:],skip_special_tokens=True))
+  print("Answer: " + tokenizer.decode(sample_output[0].tolist()[len(tokenized_indexs)+1:],skip_special_tokens=True))
+  print(100 * '-')
 
 # for s in kss.split_sentences(sent):
 #     print(s)
