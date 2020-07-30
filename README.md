@@ -1,4 +1,4 @@
-# Dialog Language Model
+# Korean Dialog Language Model  
 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델을 사용하여 `auto regressive`, `text classification` 테스트.   
 - **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델
 - **KoELECTRA**, **KoBERT**: **질의**에 대해서 "카테고리를 예측" 하는 과제 하나와
