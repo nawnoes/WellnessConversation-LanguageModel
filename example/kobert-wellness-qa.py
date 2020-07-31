@@ -36,7 +36,7 @@ def load_wellness_answer():
 if __name__ == "__main__":
   root_path='..'
   checkpoint_path =f"{root_path}/checkpoint"
-  save_ckpt_path = f"{checkpoint_path}/kobert-wellnese.pth"
+  save_ckpt_path = f"{checkpoint_path}/kobert-wellnesee-text-classification.pth"
 
   #답변과 카테고리 불러오기
   category, answer = load_wellness_answer()
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     max_index_value = softmax_logit[torch.argmax(softmax_logit)].item()
 
     answer_list = answer[category[str(max_index)]]
-    answer_len= len(answer_list)
+    answer_len= len(answer_list)-1
     answer_index = random.randint(0,answer_len)
     print(f'Answer: {answer_list[answer_index]}, index: {max_index}, value: {max_index_value}')
     print('-'*50)

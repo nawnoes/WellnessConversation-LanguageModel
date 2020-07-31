@@ -1,8 +1,9 @@
 # Korean Dialog Language Model  
-huggingface transformers, pytorch, 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델과  [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.   
+huggingface transformers, pytorch, 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델과  [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.
+
 - **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델
-- **KoELECTRA**, **KoBERT**: **질의**에 대해서 "카테고리를 예측" 하는 과제 하나와
-바로 "답변을 예측" 하는 `Text Classification` 과제를 테스트.
+- **KoELECTRA**: **질의**에 대해서 "카테고리를 예측" 하는 과제 
+- **KoBERT**:  **질의**에 대해서 "카테고리를 예측" 하는 과제 및 바로 "답변을 예측" 하는 `Text Classification` 과제를 테스트.
 
 ## 사용 Language Model
 KoELECTRA, KoBERT, KoGPT2
@@ -29,7 +30,7 @@ KoELECTAR 및 KoBERT를 이용한 텍스트 분류 모델.
 Wellness 심리 상담 데이터 사용. Wellness 데이터의 경우 **카테고리/ 질문/ 답변**으로 나누어져있다. 카테고리 별로 3개 내외의 답변을 가지고 있으므로
 Wellness 데이터의 경우  질문과 카테고리 클래스의 쌍으로 만들어 학습.   
   
-**카테고리 클래스** 데이터  
+**카테고리 클래스** 데이터: 카테고리 클래스 `359`개
 ```txt
 감정/감정조절이상    0
 감정/감정조절이상/화    1
@@ -44,7 +45,7 @@ Wellness 데이터의 경우  질문과 카테고리 클래스의 쌍으로 만�
 감정/걱정    모든 문제는 해결되기 마련이잖아요. 마음을 편히 드세요.
 ```
   
-**질의과 카테고리 클래스 쌍** 데이터 
+**질의과 카테고리 클래스 쌍** 데이터: 5231
 ```txt
 근데 감정을 다스리지 못해 욱하기도하고.    0
 순간순간 감정조절을 못해요.    0
@@ -70,7 +71,7 @@ class koElectraForSequenceClassification(ElectraPreTrainedModel):
 ...중략...
 ```
 ###### 2.KoBERT
-> 성능 아쉬운부분은 Dense가 없는 부분. (추후 수정)
+> Dense가 없는 부분
 ```python
 class KoBERTforSequenceClassfication(BertPreTrainedModel):
   def __init__(self,
@@ -213,6 +214,29 @@ Question: 요즘 잠이 안와요
 Answer: 잠을 못 자는 것만큼 힘든 게 없죠. 너무 힘들면 잠깐 산책이라도 하는 건 어떨까요?저는 당신이 있어 행복한데 그런 당신도 행복했으면 좋겠어요. 제가 옆에 있어
 ----------------------------------------------------------------------------------------------------
 
+```
+
+**KoBERT**
+```
+Question: 입맛도 통 없구
+Answer: 그래도 끼니는 거르시면 안 돼요. 작은 거라도 조금씩 드세요., index: 309, value: 6.560961723327637
+--------------------------------------------------
+
+Question: 기분이 우울해서 큰일이야
+Answer: 우울할 때는 칭찬타임! 오늘의 잘한 일을 말해봐요., index: 59, value: 8.06270694732666
+--------------------------------------------------
+
+Question: 나는 아무것도 잘한게 없는걸?
+Answer: 그 마음 다 이해해요. 가끔 내 마음처럼 되지 않을 때가 있죠., index: 37, value: 4.698881149291992
+--------------------------------------------------
+
+Question: 모든걸 내 마음대로 하고 싶을 때 있잖아
+Answer: 불안감을 주는 상황에 대해 곰곰이 생각해보는 건 어떨까요?, index: 41, value: 4.187689304351807
+--------------------------------------------------
+
+Question: 무엇이 불안한지 잘 모르겠어
+Answer: 불안감이 사라질 때까지 제가 옆에 있어 드릴게요., index: 41, value: 7.389428615570068
+--------------------------------------------------
 ```
 # References
 [KoBERT](https://github.com/SKTBrain/KoBERT)  
