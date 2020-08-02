@@ -1,16 +1,16 @@
-# Korean Dialog Language Model  
-huggingface transformers, pytorch, 한국어 Language Model을 활용한 대화 AI. 한국어 언어 모델과  [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.
+# Korean Language Model for Wellness Conversations
+`huggingface transformers`, `pytorch`, `한국어 Language Model`을 활용한 대화 AI. 한국어 언어 모델과  [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.
 
 - **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델
-- **KoELECTRA**: **질의**에 대해서 "카테고리를 예측" 하는 과제 
-- **KoBERT**:  **질의**에 대해서 "카테고리를 예측" 하는 과제 및 바로 "답변을 예측" 하는 `Text Classification` 과제를 테스트.
+- **KoELECTRA**: **질의**에 대해서 "카테고리를 예측" 
+- **KoBERT**:  **질의**에 대해서 "카테고리를 예측" 
 
 ## 사용 Language Model
 KoELECTRA, KoBERT, KoGPT2
 
 ## 환경
 ### Data
-- [AI 허브 심리상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence): 심리 상담 데이터의 경우 회원가입 후 신청하면 다운로드 가능.
+- [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence): 심리 상담 데이터의 경우 회원가입 후 신청하면 다운로드 가능.
 - [songys/Chatbot_data](https://github.com/songys/Chatbot_data)
 ### GPU
 Colab pro, P100
@@ -71,7 +71,6 @@ class koElectraForSequenceClassification(ElectraPreTrainedModel):
 ...중략...
 ```
 ###### 2.KoBERT
-> Dense가 없는 부분
 ```python
 class KoBERTforSequenceClassfication(BertPreTrainedModel):
   def __init__(self,
@@ -178,8 +177,8 @@ Answer: 자주 그러신다면 병원 진찰을 받아 보는 건 어떠세요?,
 --------------------------------------------------
 ```
 
-**KoGPT2**
-
+**KoGPT2**  
+KoGPT2의 경우 Text Generation 방법에 따라 퀄리티가 좌우된다. 각각에 맞는 적절한 설정 변경 필요.
 ```txt
 Question: 다이어트 하고싶은데 맘처럼 안되네
 Answer: 다이어트 파이팅! 시작해봐요. 완벽한100%를 만드는 건 쉽지 않은 일이죠. 그 마음 다 잡았다면 후회없게 잊을 거예요. 포이즌을 해보세요.
