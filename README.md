@@ -1,7 +1,7 @@
 # Korean Language Model for Wellness Conversations
 `huggingface transformers`, `pytorch`, `한국어 Language Model`과 [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 활용한 심리상담 대화 모델.  
   
-**개요**  
+## 개요 
 언어모델에 대해 `auto regressive`, `text classification` 파인튜닝 및 테스트  
 - **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**에 대한 텍스 생성
 - **KoELECTRA**: **질의**에 대해서 **카테고리를 예측** 
