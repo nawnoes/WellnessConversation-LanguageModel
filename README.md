@@ -1,6 +1,6 @@
 # Korean Language Model for Wellness Conversations
-`huggingface transformers`, `pytorch`, `한국어 Language Model`을 활용한 대화 AI. 한국어 언어 모델과  [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.
-
+`huggingface transformers`, `pytorch`, `한국어 Language Model`을 활용한 심리상담 대화 AI.  
+한국어 언어 모델과  [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 사용하여 `auto regressive`, `text classification` 테스트.
 - **KoGPT2**: **질의**가 주어졌을 때, 다음 **답변**을 생성하는 모델
 - **KoELECTRA**: **질의**에 대해서 "카테고리를 예측" 
 - **KoBERT**:  **질의**에 대해서 "카테고리를 예측" 
@@ -133,7 +133,7 @@ def generate(self,
                temperature=temperature)
 ```
 
-#### 결과
+### 3. 결과
 **KoELECTRA** 
 ```
 Question: 벽에 머리를 부딪히는 느낌이야
@@ -237,6 +237,9 @@ Question: 무엇이 불안한지 잘 모르겠어
 Answer: 불안감이 사라질 때까지 제가 옆에 있어 드릴게요., index: 41, value: 7.389428615570068
 --------------------------------------------------
 ```
+
+## 기간
+2020.06~2020.07
 # References
 [KoBERT](https://github.com/SKTBrain/KoBERT)  
 [KoBERT-Transformers](https://github.com/monologg/KoBERT-Transformers)  
