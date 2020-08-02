@@ -1,4 +1,4 @@
-# Korean Language Model for Wellness Conversations
+# Korean Language Model for Wellness Conversation
 `huggingface transformers`, `pytorch`, `한국어 Language Model`과 [AI 허브 정신건강 상담 데이터](http://www.aihub.or.kr/keti_data_board/language_intelligence)를 활용한 심리상담 대화 모델.  
   
 ## 개요 
