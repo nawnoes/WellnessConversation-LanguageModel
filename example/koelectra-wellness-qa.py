@@ -70,18 +70,18 @@ if __name__ == "__main__":
 
     output = model(**data)
 
-    logit = output
-    softmax_logit = nn.Softmax(logit).dim
-    softmax_logit = softmax_logit[0].squeeze()
+    logit = output[0]
+    softmax_logit = torch.softmax(logit, dim=-1)
+    softmax_logit = softmax_logit.squeeze()
 
     max_index = torch.argmax(softmax_logit).item()
     max_index_value = softmax_logit[torch.argmax(softmax_logit)].item()
 
     answer_list = answer[category[str(max_index)]]
-    answer_len= len(answer_list)-1
-    answer_index = random.randint(0,answer_len)
-    print(f'Answer: {answer_list[answer_index]}, index: {max_index}, value: {max_index_value}')
-    print('-'*50)
+    answer_len = len(answer_list) - 1
+    answer_index = random.randint(0, answer_len)
+    print(f'Answer: {answer_list[answer_index]}, index: {max_index}, softmax_value: {max_index_value}')
+    print('-' * 50)
   # print('argmin:',softmax_logit[torch.argmin(softmax_logit)])
 
 
