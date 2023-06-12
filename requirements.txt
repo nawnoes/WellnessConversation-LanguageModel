@@ -1,6 +1,6 @@
 kobert-transformers==0.4.1
 kogpt2-transformers==0.3.0
-transformers==3.0.2
+transformers==4.30.0
 torch
 tokenizers==0.8.1rc1
 kss
